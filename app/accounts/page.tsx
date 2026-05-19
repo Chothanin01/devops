@@ -3,7 +3,7 @@ import { prisma } from "@/lib/infrastructure/prisma";
 import { DashboardNav } from "@/components/ui/DashboardNav";
 import { AccountSection } from "@/components/accounts/AccountSection";
 import { Button } from "@/components/ui/Button";
-import { AppAccount, Transaction } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 export default async function AccountsPage() {
   const session = await auth();
@@ -14,11 +14,15 @@ export default async function AccountsPage() {
     include: { transactions: { orderBy: { date: 'desc' } } }
   });
 
+  type AccountWithTransactions = Prisma.AppAccountGetPayload<{
+    include: { transactions: true }
+  }>;
+
   // Prepare serializable data for Client Component
-  const serializableAccounts = accounts.map((a: AppAccount & { transactions: Transaction[] }) => ({
+  const serializableAccounts = accounts.map((a: AccountWithTransactions) => ({
     ...a,
     balance: Number(a.balance),
-    transactions: a.transactions.map((tx: Transaction) => ({
+    transactions: a.transactions.map((tx) => ({
       ...tx,
       amount: Number(tx.amount)
     }))

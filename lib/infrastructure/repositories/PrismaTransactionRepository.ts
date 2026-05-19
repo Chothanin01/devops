@@ -1,9 +1,11 @@
-import { Transaction as PrismaTransaction, Budget as PrismaBudget } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../prisma";
 import { ITransactionRepository } from "../../domain/repositories/ITransactionRepository";
 import { Transaction, CreateTransactionInput, TransactionType } from "../../domain/entities";
 
-type PrismaTransactionWithBudget = PrismaTransaction & { budget: PrismaBudget | null };
+type PrismaTransactionWithBudget = Prisma.TransactionGetPayload<{
+  include: { budget: true }
+}>;
 
 export class PrismaTransactionRepository implements ITransactionRepository {
   private mapToEntity(prismaTransaction: PrismaTransactionWithBudget): Transaction {
