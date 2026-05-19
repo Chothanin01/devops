@@ -6,7 +6,7 @@ interface HeatmapProps {
 
 export function SpendingHeatmap({ data }: HeatmapProps) {
   // Max value to determine intensity
-  const maxVal = Math.max(...data.map(d => d.value), 1);
+  const maxVal = Math.max(...data.map((d: { date: string; value: number }) => d.value), 1);
 
   const getIntensity = (val: number) => {
     if (val === 0) return "bg-gray-100";
@@ -20,7 +20,7 @@ export function SpendingHeatmap({ data }: HeatmapProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap gap-2 justify-center">
-        {data.map((day, i) => (
+        {data.map((day: { date: string; value: number }) => (
           <div
             key={day.date}
             className={`w-4 h-4 rounded-sm sm:w-6 sm:h-6 ${getIntensity(day.value)} transition-all hover:ring-2 hover:ring-offset-1 hover:ring-gray-300 cursor-default`}

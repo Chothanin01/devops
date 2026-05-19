@@ -3,6 +3,7 @@ import { prisma } from "@/lib/infrastructure/prisma";
 import { DashboardNav } from "@/components/ui/DashboardNav";
 import { BudgetList } from "@/components/budgets/BudgetList";
 import { Button } from "@/components/ui/Button";
+import { Budget, Transaction } from "@prisma/client";
 
 export default async function BudgetsPage() {
   const session = await auth();
@@ -17,7 +18,7 @@ export default async function BudgetsPage() {
     where: { account: { userId: session.user.id }, type: 'EXPENSE' }
   });
 
-  const budgetData = budgets.map(b => ({
+  const budgetData = budgets.map((b: Budget) => ({
       id: b.id,
       userId: b.userId,
       category: b.category,
@@ -25,8 +26,8 @@ export default async function BudgetsPage() {
       createdAt: b.createdAt,
       updatedAt: b.updatedAt,
       spent: transactions
-        .filter(t => t.budgetId === b.id)
-        .reduce((sum, t) => sum + Number(t.amount), 0)
+        .filter((t: Transaction) => t.budgetId === b.id)
+        .reduce((sum: number, t: Transaction) => sum + Number(t.amount), 0)
   }));
 
   return (
