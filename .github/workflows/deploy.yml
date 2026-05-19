@@ -16,10 +16,10 @@ jobs:
         run: npm ci
 
       - name: Generate Prisma Client
-        run: npx prisma generate
+        run: DATABASE_URL=${{ secrets.DATABASE_URL }} npx prisma generate
 
       - name: Run Database Migrations
-        run: npx prisma migrate deploy
+        run: DATABASE_URL=${{ secrets.DATABASE_URL }} npx prisma migrate deploy
 
       - name: Deploy to Vercel
         run: npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
