@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --glassmorphism-primary: oklch(56% 0.12 170);
+    --glassmorphism-primary-hover: oklch(50% 0.12 170);
+    --glassmorphism-success: oklch(40% 0.14 140);
+    --glassmorphism-danger: oklch(60% 0.18 15);
+    --glassmorphism-text: oklch(18% 0.012 250);
+    --glassmorphism-surface: oklch(100% 0 0);
+    --glassmorphism-border: oklch(90% 0.006 240);
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--glassmorphism-text);
+    background-color: #f9fafb; /* gray-50 */
+  }
+}
+
+
