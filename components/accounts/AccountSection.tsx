@@ -4,8 +4,13 @@ import { useState } from "react";
 import { AddAccountForm } from "./AddAccountForm";
 import { Button } from "../ui/Button";
 import { deleteAccount } from "@/lib/actions/accounts";
+import { Account, Transaction } from "@/lib/domain/entities";
 
-export function AccountSection({ accounts: initialAccounts }: { accounts: any[] }) {
+interface AccountWithTransactions extends Account {
+  transactions: Transaction[];
+}
+
+export function AccountSection({ accounts: initialAccounts }: { accounts: AccountWithTransactions[] }) {
   const [showForm, setShowForm] = useState(false);
   const [accounts, setAccounts] = useState(initialAccounts);
 
@@ -59,7 +64,7 @@ export function AccountSection({ accounts: initialAccounts }: { accounts: any[] 
             <div className="space-y-3">
               <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Recent Activity</h4>
               <div className="space-y-2">
-                {account.transactions.slice(0, 5).map((tx: any) => (
+                {account.transactions.slice(0, 5).map((tx: Transaction) => (
                   <div key={tx.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                     <span className="text-sm font-medium">{tx.description || "Transaction"}</span>
                     <span className={`text-sm font-bold ${tx.type === 'INCOME' ? 'text-[var(--glassmorphism-success)]' : 'text-[var(--glassmorphism-danger)]'}`}>

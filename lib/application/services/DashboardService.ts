@@ -1,8 +1,40 @@
 import { prisma } from "../../infrastructure/prisma";
 import { Transaction } from "../../domain/entities";
 
+export interface DailyTrend {
+  date: string;
+  income: number;
+  expense: number;
+}
+
+export interface CategoryData {
+  name: string;
+  value: number;
+}
+
+export interface ForecastData {
+  currentExpense: number;
+  projectedAdditional: number;
+  totalProjected: number;
+}
+
+export interface HeatmapData {
+  date: string;
+  value: number;
+}
+
+export interface DashboardAnalytics {
+  totalNetWorth: number;
+  monthlyIncome: number;
+  monthlyExpense: number;
+  dailyTrends: DailyTrend[];
+  categoryData: CategoryData[];
+  forecastData: ForecastData;
+  heatmapData: HeatmapData[];
+}
+
 export class DashboardService {
-  async getDashboardAnalytics(userId: string) {
+  async getDashboardAnalytics(userId: string): Promise<DashboardAnalytics> {
     const accounts = await prisma.appAccount.findMany({
       where: { userId },
     });
@@ -56,7 +88,7 @@ export class DashboardService {
     };
   }
 
-  private calculateForecast(dailyTrends: any[]) {
+  private calculateForecast(dailyTrends: DailyTrend[]): ForecastData {
     // Simple linear projection based on 30-day average
     const totalExpense = dailyTrends.reduce((sum, d) => sum + d.expense, 0);
     const avgDailyExpense = totalExpense / Math.max(dailyTrends.length, 1);
@@ -74,8 +106,8 @@ export class DashboardService {
     };
   }
 
-  private generateHeatmap(transactions: any[], days: number) {
-    const data = [];
+  private generateHeatmap(transactions: { type: string, amount: number, date: Date }[], days: number): HeatmapData[] {
+    const data: HeatmapData[] = [];
     const now = new Date();
     now.setHours(0, 0, 0, 0);
 
@@ -93,7 +125,7 @@ export class DashboardService {
     return data;
   }
 
-  private aggregateByCategory(transactions: any[]) {
+  private aggregateByCategory(transactions: { category: string, amount: number }[]): CategoryData[] {
     const categories: Record<string, number> = {};
     transactions.forEach(t => {
       const category = t.category;
@@ -106,8 +138,8 @@ export class DashboardService {
       .slice(0, 5); // Top 5 categories
   }
 
-  private aggregateByDate(transactions: any[], days: number) {
-    const data = [];
+  private aggregateByDate(transactions: { type: string, amount: number, date: Date }[], days: number): DailyTrend[] {
+    const data: DailyTrend[] = [];
     const now = new Date();
     now.setHours(0, 0, 0, 0);
 

@@ -1,12 +1,16 @@
+import { AppAccount } from "@prisma/client";
 import { prisma } from "../prisma";
 import { IAccountRepository } from "../../domain/repositories/IAccountRepository";
 import { Account, CreateAccountInput } from "../../domain/entities";
 
 export class PrismaAccountRepository implements IAccountRepository {
-  private mapToEntity(prismaAccount: any): Account {
+  private mapToEntity(prismaAccount: AppAccount): Account {
     return {
-      ...prismaAccount,
+      id: prismaAccount.id,
+      name: prismaAccount.name,
       balance: Number(prismaAccount.balance),
+      createdAt: prismaAccount.createdAt,
+      updatedAt: prismaAccount.updatedAt,
     };
   }
 

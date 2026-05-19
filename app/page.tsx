@@ -10,6 +10,7 @@ import { AddTransactionForm } from "@/components/transactions/AddTransactionForm
 import { DashboardNav } from "@/components/ui/DashboardNav";
 import { MonthlySummary } from "@/components/analytics/MonthlySummary";
 import { Button } from "@/components/ui/Button";
+import { Account, Transaction, Budget } from "@/lib/domain/entities";
 
 export default async function Home() {
   const session = await auth();
@@ -21,7 +22,7 @@ export default async function Home() {
   const transactions = await getTransactions();
   const budgets = await prisma.budget.findMany({ where: { userId: session.user.id } });
   
-  const serializableBudgets = budgets.map(b => ({
+  const serializableBudgets = budgets.map((b) => ({
     ...b,
     amount: Number(b.amount)
   }));
@@ -68,7 +69,7 @@ export default async function Home() {
           <div className="lg:col-span-2">
             <TransactionList 
               transactions={transactions} 
-              accounts={accounts.map(a => ({ id: a.id, name: a.name }))} 
+              accounts={accounts.map((a: Account) => ({ id: a.id, name: a.name }))} 
             />
           </div>
         </div>

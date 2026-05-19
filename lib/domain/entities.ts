@@ -40,3 +40,18 @@ export interface CreateTransactionInput {
   budgetId?: string;
   date?: Date;
 }
+
+export interface Budget {
+  id: string;
+  userId: string;
+  category: string;
+  amount: number;
+  spent?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateBudgetInput {
+  category: string;
+  amount: number;
+}

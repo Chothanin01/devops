@@ -1,13 +1,27 @@
+import { Transaction as PrismaTransaction, Budget as PrismaBudget } from "@prisma/client";
 import { prisma } from "../prisma";
 import { ITransactionRepository } from "../../domain/repositories/ITransactionRepository";
-import { Transaction, CreateTransactionInput } from "../../domain/entities";
+import { Transaction, CreateTransactionInput, TransactionType } from "../../domain/entities";
+
+type PrismaTransactionWithBudget = PrismaTransaction & { budget: PrismaBudget | null };
 
 export class PrismaTransactionRepository implements ITransactionRepository {
-  private mapToEntity(prismaTransaction: any): Transaction {
+  private mapToEntity(prismaTransaction: PrismaTransactionWithBudget): Transaction {
     return {
-      ...prismaTransaction,
+      id: prismaTransaction.id,
+      type: prismaTransaction.type as TransactionType,
       amount: Number(prismaTransaction.amount),
+      description: prismaTransaction.description,
+      date: prismaTransaction.date,
+      accountId: prismaTransaction.accountId,
+      fromAccountId: prismaTransaction.fromAccountId,
+      receiptUrl: prismaTransaction.receiptUrl,
+      isRecurring: prismaTransaction.isRecurring,
+      recurringInterval: prismaTransaction.recurringInterval,
+      budgetId: prismaTransaction.budgetId,
       category: prismaTransaction.budget?.category,
+      createdAt: prismaTransaction.createdAt,
+      updatedAt: prismaTransaction.updatedAt,
     };
   }
 
@@ -52,6 +66,9 @@ export class PrismaTransactionRepository implements ITransactionRepository {
         receiptUrl: data.receiptUrl,
         budgetId: data.budgetId,
         date: data.date || new Date(),
+      },
+      include: {
+        budget: true
       }
     });
     return this.mapToEntity(transaction);

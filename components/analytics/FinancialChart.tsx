@@ -1,8 +1,9 @@
 "use client";
 
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import { DailyTrend } from "@/lib/application/services/DashboardService";
 
-export function FinancialChart({ data }: { data: any[] }) {
+export function FinancialChart({ data }: { data: DailyTrend[] }) {
   return (
     <div className="h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
